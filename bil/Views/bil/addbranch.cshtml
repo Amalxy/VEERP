@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewData["Title"] = "addbranch";
+}
+
+<h2>addbranch</h2>
+<form method="post" action="@Url.Action("Addbranch", "bil")">
+    <div class="form-group">
+
+
+
+        @Html.Hidden("Name", (string)@ViewBag.name)
+        @Html.Hidden("ShopName", (string)@ViewBag.shopname)
+
+
+</dev>
+
+
+        <div class="form-group">
+            <label for="branchname">branch:</label>
+            <input type="text" id="branchname" name="branchname" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="location">location:</label>
+            <input type="text" id="location" name="location" class="form-control" required />
+        </div>
+
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Add branch</button>
+        </div>
+</form>

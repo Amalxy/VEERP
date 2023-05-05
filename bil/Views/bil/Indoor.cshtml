@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "login";
+}
+
+
+
+@model Shop
+
+<h2>Login</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+@using (Html.BeginForm("Login", "bil", FormMethod.Post, new { onsubmit = "return validateForm()" }))
+
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ShopName)
+        @Html.TextBoxFor(m => m.ShopName, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password)
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-primary" onclick="hashAndSubmit()">Login</button>
+    @Html.ActionLink("Register", "Register", "bil")
+}
+@if (ViewBag.Error != null)
+{
+    <script>
+        alert('@ViewBag.Error');
+    </script>
+}
+
+<script>
+    async function hash(input) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(input);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = new Uint8Array(hashBuffer);
+        const hashedString = hashArray.reduce((accumulator, value) => {
+            return accumulator + ('0' + value.toString(16)).slice(-2);
+        }, '');
+        return hashedString;
+    }
+
+    async function hashAndSubmit() {
+        var passwordInput = document.getElementById("Password");
+        var password = passwordInput.value;
+        var hashedPassword = await hash(password); // assuming you have a sha256 function
+
+        passwordInput.value = hashedPassword;
+        document.forms[0].submit();
+    }
+
+    function validateForm() {
+        var emailInput = document.getElementById("Email");
+        var passwordInput = document.getElementById("Password");
+
+        if (emailInput.value == "" || passwordInput.value == "") {
+            alert("Email and password are required");
+            return false;
+        }
+
+        return true;
+    }
+
+
+</script>

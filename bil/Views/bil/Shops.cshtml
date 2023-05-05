@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Shops";
+}
+
+<h2>Shops</h2>
+
+@model IEnumerable<Shop>
+
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #ddd;
+    }
+</style>
+
+<h2>List of Shops</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Shop ID</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var shop in Model)
+        {
+            <tr>
+                <td>@shop.ShopName</td>
+                <td>@shop.Name</td>
+                <td>@shop.Address</td>
+                <td>@shop.Phone</td>
+                <td>@shop.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>

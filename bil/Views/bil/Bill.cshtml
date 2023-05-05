@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Combined Invoice</title>
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <style>
+        /* Set the width of each column to 50% */
+        .column {
+            width: 50%;
+            float: left;
+            box-sizing: border-box;
+            padding: 0 10px;
+        }
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="row">
+        <div class="column">
+            @using (Html.BeginForm("Bill", "ControllerName", FormMethod.Post))
+            {
+                <div>
+                    <label>Product Name:</label>
+                    <input type="text" id="productName" name="productName" />
+                </div>
+                <div>
+                    <label>Price:</label>
+                    <input type="text" id="price" name="price " readonly />
+                </div>
+                <button type="submit">Submit</button>
+            }
+        </div>
+        <div class="column">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="productNameCell"></td>
+                        <td id="priceCell"></td>
+                        <td id="quantityCell">1</td>
+                        <td id="totalCell"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+
+        const recognition = new SpeechRecognition();
+        recognition.interimResults = true;
+        recognition.continuous = true;
+        recognition.start();
+    var j = jQuery.noConflict();
+        j(document).ready(function () {
+        j.ajax({
+            url: "@Url.Action("GetAvailableProducts", "ControllerName")",
+            type: "GET",
+            success: function(result) {
+                var availableProducts = result;
+                j("#productName").autocomplete({
+                    source: availableProducts,
+                    select: function(event, ui) {
+                        event.preventDefault();
+                        var selectedProduct = ui.item.value;
+                        j.ajax({
+                            url: "@Url.Action("GetProductDetails", "ControllerName")",
+                            type: "POST",
+                            data: { productName: selectedProduct },
+                            success: function(result) {
+                                // update the invoice table
+                                j("#productNameCell").text(result.Name);
+                                j("#priceCell").text(result.Price);
+                                j("#quantityCell").text(1);
+                                j("#totalCell").text(result.Price);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        });
+        recognition.onresult = function (event) {
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                if (event.results[i].isFinal) {
+                    transcript += event.results[i][0].transcript;
+                    j("#productName").val(transcript);
+                    recognition.start();
+                } else {
+                    transcript += event.results[i][0].transcript + ' ';
+                    document.getElementById("d").append("ee")
+                    recognition.start();
+                }
+            }
+            document.getElementById('transcript').textContent = transcript;
+        }
+        recognition.onerror = function (event) {
+            console.error('Speech recognition error', event.error);
+            
+        }
+
+    </script>
+
+</body>
+</html>

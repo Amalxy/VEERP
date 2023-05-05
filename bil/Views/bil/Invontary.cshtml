@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Product>
+<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+@{
+    ViewBag.Title = "Products";
+}
+
+<h2>Products</h2>
+
+<p>
+    @Html.ActionLink("Add Products", "Add", new { name = @ViewBag.name, shopname = @ViewBag.shopname }) <br>
+
+    @Html.ActionLink("create a bill", "Bill", new { name = @ViewBag.name, shopname = @ViewBag.shopname })<br />
+
+    @Html.ActionLink("add branchs ", "Addbranch", new { name = @ViewBag.name, shopname = @ViewBag.shopname })<br />
+
+   
+</p>
+
+<div class="form-group">
+    <label for="branch">branch:</label>
+    <select id="branch" name="branch" class="form-control"  required>
+        <option value="">Select branch</option>
+        @foreach (var branch in ViewBag.branchs)
+        {
+            <option value="@branch">@branch</option>
+        }
+    </select>
+</div>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product </th>
+           
+            <th>Description</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>gst</th>
+            <th>Supplier</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                
+                
+                <td>@Html.DisplayFor(modelItem => item.ProductName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                <td>@Html.DisplayFor(modelItem => item.gst)</td>
+                
+                <td>@Html.DisplayFor(modelItem => item.Supplier)</td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    var j = jQuery.noConflict();
+    j(document).ready(function () {
+        // Define an array of available product names
+        var availableProducts = @Html.Raw(Json.Serialize(ViewBag.branchs));
+
+        // Attach the Autocomplete widget to the text input field with ID "branch"
+        j("#branch").autocomplete({
+            source: availableProducts,
+        });
+        setTimeout(function () {
+            // Set the initial value of the input field to "new"
+            j("#branch").val("@ViewBag.br");
+        }, 100);
+        
+            
+        j("#branch").on("change", function () {
+                var name = "@ViewBag.name";
+                var shopname = "@ViewBag.shopname";
+                var se = j("#branch").val();
+
+                var url = "/bil/Invontary?name=" + encodeURIComponent(name) + "&shopname=" + encodeURIComponent(shopname) + "&bran=" + encodeURIComponent(se);
+                    window.location.href = url;
+        });
+    });
+</script>

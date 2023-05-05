@@ -1,0 +1,79 @@
+﻿
+@model Shop
+@using (Html.BeginForm("Register", "bil", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name)
+        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+    </div>  <div class="form-group">
+        @Html.LabelFor(model => model.ShopName)
+        @Html.EditorFor(model => model.ShopName, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.ShopName, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Address)
+        @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Phone)
+        @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email)
+        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Password)
+        @Html.PasswordFor(model => model.Password, new { @class = "form-control", id = "Password" })
+        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+
+        <script>
+            $(document).ready(function () {
+                $('#Password').attr('maxlength', '250');
+            });
+        </script>
+
+    </div>
+
+    @if (!string.IsNullOrEmpty(ViewBag.OldField))
+    {
+        <input type="hidden" name="OldField" value="@ViewBag.OldField" />
+    }
+
+    <div class="form-group">
+        <input type="button" value="Create" class="btn btn-primary" onclick="hashAndSubmit()" />
+    </div>
+}
+
+<script>
+    async function hash(input) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(input);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = new Uint8Array(hashBuffer);
+        const hashedString = hashArray.reduce((accumulator, value) => {
+            return accumulator + ('0' + value.toString(16)).slice(-2);
+        }, '');
+        return hashedString;
+    }
+
+    async function hashAndSubmit() {
+        var passwordInput = document.getElementById("Password");
+        var password = passwordInput.value;
+        var hashedPassword = await hash(password); // assuming you have a sha256 function
+
+        passwordInput.value  = hashedPassword;
+        document.forms[0].submit();
+    }
+</script>
